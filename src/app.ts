@@ -1,10 +1,11 @@
 import userRoutes from "./user/v1/user.routes";
+import bookRoutes from "./book/v1/book.routes";
 import express from "express";
 import { Request, Response } from "express";
 import cors from "cors";
 
 // ROUTES
-const SERVER_VERSION = "/api/v1/";
+const SERVER_VERSION = "/library/v1/";
 
 // FALLBACKS
 function routeNotFound(request: Request, response: Response) {
@@ -21,6 +22,7 @@ export default function createApp() {
   app.use(express.json());
   
   app.use(SERVER_VERSION + "users", userRoutes);
+  app.use(SERVER_VERSION + "books",bookRoutes)
   
   app.use(routeNotFound);
   return app;

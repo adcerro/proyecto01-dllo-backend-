@@ -38,10 +38,10 @@ async function CreateUser(request: Request<CreateUserType>, response: Response) 
     })
   }
 }
-async function GetOneUser(request: Request<{user: UserType}>, response: Response) {
+async function GetOneUser(request: Request, response: Response) {
   console.log(request.query)
   console.log(request.body)
-  const users = await readUsers(request.body);
+  const users = await readUsers();
 
   response.status(200).json({
     message: "Success.",
