@@ -4,6 +4,7 @@ import { CreateUserType } from "./user.types";
 import { AuthMiddleware } from "../../middleware/auth";
 import { UserType } from "./user.model";
 import { hashMiddleware } from "../../middleware/hasher";
+import { env } from "process";
 
 // INIT ROUTES
 const userRoutes = Router();
@@ -42,6 +43,8 @@ async function CreateUser(request: Request, response: Response) {
 
 async function logUser(request: Request, response: Response) {
   let bcrypt = require('bcrypt')
+  const jwt = require('jsonwebtoken');
+
   if (request.body.email === undefined || request.body.password === undefined) {
     return response.status(400).json({
       message: "Missing fields"
@@ -50,12 +53,16 @@ async function logUser(request: Request, response: Response) {
 
   try {
     const user = await readUsers({ email: request.body.email });
+    if (user.length == 0) {
+      return response.status(400).json({ message: "Not a registered user" });
+    }
     bcrypt.compare(request.body.password, user[0].password, function (err: Error, result: boolean) {
       if (result) {
-        response.status(200).json({
-          message: "Logged in",
-          user: user,
-        });
+        response.status(200).json(
+          jwt.sign({ sub: user[0].email },
+            (env as { JWT_SECRET: string }).JWT_SECRET,
+            { expiresIn: "12h" })
+          );
       } else {
         response.status(200).json({
           message: "Wrong Credentials",
