@@ -1,8 +1,5 @@
 import { Router, Request, Response } from "express";
-import { createUser, readUsers } from "./user.controller";
-import { CreateUserType } from "./user.types";
-import { AuthMiddleware } from "../../middleware/auth";
-import { UserType } from "./user.model";
+import { createUser, readUsers,readUser } from "./user.controller";
 import { hashMiddleware } from "../../middleware/hasher";
 import { env } from "process";
 
@@ -10,14 +7,7 @@ import { env } from "process";
 const userRoutes = Router();
 
 // DECLARE ENDPOINT FUNCTIONS
-async function GetUsers(request: Request, response: Response) {
-  const users = await readUsers();
 
-  response.status(200).json({
-    message: "Success.",
-    users: users,
-  });
-}
 async function CreateUser(request: Request, response: Response) {
   if (request.body.email === undefined || request.body.password === undefined) {
     return response.status(400).json({
@@ -52,14 +42,14 @@ async function logUser(request: Request, response: Response) {
   }
 
   try {
-    const user = await readUsers({ email: request.body.email });
-    if (user.length == 0) {
+    const user = await readUser(request.body.email);
+    if (user === null) {
       return response.status(400).json({ message: "Not a registered user" });
     }
-    bcrypt.compare(request.body.password, user[0].password, function (err: Error, result: boolean) {
+    bcrypt.compare(request.body.password, user.password, function (err: Error, result: boolean) {
       if (result) {
         response.status(200).json(
-          jwt.sign({ sub: user[0].email },
+          jwt.sign({ sub: user.email },
             (env as { JWT_SECRET: string }).JWT_SECRET,
             { expiresIn: "12h" })
           );
@@ -76,20 +66,8 @@ async function logUser(request: Request, response: Response) {
     })
   }
 }
-async function GetOneUser(request: Request, response: Response) {
-  console.log(request.query)
-  console.log(request.body)
-  const users = await readUsers();
-
-  response.status(200).json({
-    message: "Success.",
-    users: users,
-  });
-}
 
 // DECLARE ENDPOINTS
-userRoutes.get("/", GetUsers);
-userRoutes.get("/one", AuthMiddleware, GetOneUser);
 userRoutes.post("/register", hashMiddleware, CreateUser);
 userRoutes.post("/login", logUser)
 
