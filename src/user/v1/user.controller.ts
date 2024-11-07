@@ -4,8 +4,8 @@ import { UserType } from "./user.model";
 import { CreateUserType } from "./user.types";
 
 // DECLARE CONTROLLER FUNCTIONS
-async function readUsers(): Promise<UserType[]> {
-  const users = await readUserAction();
+async function readUsers(filter:{}={}): Promise<UserType[]> {
+  const users = await readUserAction(filter);
 
   return users;
 }
