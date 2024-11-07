@@ -18,7 +18,7 @@ async function GetUsers(request: Request, response: Response) {
   });
 }
 async function CreateUser(request: Request, response: Response) {
-  if (request.body.email === undefined || request.body.password===undefined) {
+  if (request.body.email === undefined || request.body.password === undefined) {
     return response.status(400).json({
       message: "Missing fields"
     })
@@ -26,7 +26,7 @@ async function CreateUser(request: Request, response: Response) {
 
   try {
     const users = await createUser(request.body);
-    
+
     response.status(200).json({
       message: "Success.",
       users: users,
@@ -42,21 +42,21 @@ async function CreateUser(request: Request, response: Response) {
 
 async function logUser(request: Request, response: Response) {
   let bcrypt = require('bcrypt')
-  if (request.body.email === undefined || request.body.password===undefined) {
+  if (request.body.email === undefined || request.body.password === undefined) {
     return response.status(400).json({
       message: "Missing fields"
     })
   }
 
   try {
-    const user = await readUsers({email:request.body.email});
-    bcrypt.compare(request.body.password,user[0].password, function(err:Error,result:boolean){
-      if(result){
+    const user = await readUsers({ email: request.body.email });
+    bcrypt.compare(request.body.password, user[0].password, function (err: Error, result: boolean) {
+      if (result) {
         response.status(200).json({
           message: "Logged in",
           user: user,
         });
-      }else{
+      } else {
         response.status(200).json({
           message: "Wrong Credentials",
         });
@@ -83,8 +83,8 @@ async function GetOneUser(request: Request, response: Response) {
 // DECLARE ENDPOINTS
 userRoutes.get("/", GetUsers);
 userRoutes.get("/one", AuthMiddleware, GetOneUser);
-userRoutes.post("/register", hashMiddleware,CreateUser);
-userRoutes.post("/login",logUser)
+userRoutes.post("/register", hashMiddleware, CreateUser);
+userRoutes.post("/login", logUser)
 
 // EXPORT ROUTES
 export default userRoutes;
