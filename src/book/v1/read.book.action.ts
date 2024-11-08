@@ -7,10 +7,13 @@ async function readBooksAction(filter: {} = {}): Promise<BookType[]> {
     return results;
 }
 
-async function readBookAction(id: string): Promise<BookType | null> {
+async function readBookAction(id: string,active:boolean=true): Promise<BookType | null> {
     try {
         const result = await BookModel.findById(id);
-        return result;
+        if((active && result?.active)||(!active && !result?.active)){
+            return result
+        }
+        return null;
     } catch (error) {
         return null;
     }

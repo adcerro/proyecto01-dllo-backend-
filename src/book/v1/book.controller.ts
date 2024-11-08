@@ -14,8 +14,8 @@ async function createBook(userData: CreateBookType): Promise<BookType> {
     const books = await readBooksAction(filter);
     return books;
   }
-  async function readBook(id: string): Promise<BookType|null> {
-    const book = await readBookAction(id);
+  async function readBook(id: string,active:boolean=true): Promise<BookType|null> {
+    const book = await readBookAction(id,active);
     return book;
   }
   async function deleteBook(id: string): Promise<BookType|null> {

@@ -4,15 +4,15 @@ import { createBookMiddleware } from "../../middleware/create_book_permision";
 import { createBook, deleteBook, readBook, readBooks , updateBook} from "./book.controller";
 import { updateBookMiddleware } from "../../middleware/update_book_permision";
 import { deleteBookMiddleware } from "../../middleware/delete_book_permision";
-import { ReadMiddleware } from "../../middleware/read_middleware";
 
 // INIT ROUTES
 const bookRoutes = Router();
 
 // DECLARE ENDPOINT FUNCTIONS
 async function getOneBook(request: Request, response: Response) {
-  let book = await readBook(request.params.book_id);
-
+  let book = await readBook(request.params.book_id,request.query.active===undefined?true:false);
+  console.log(request.query.active===undefined?true:false);
+  
   if (book === null) {
     return response.status(401).json({
       message: "Book Not Found"
@@ -58,7 +58,7 @@ async function UpdateBook(request:Request,response:Response) {
   let updatedBook = await updateBook(request.params.book_id,request.body);
   if(updatedBook===null){
     return response.status(401).json({
-      message: "something went worng"
+      message: "something went wrong"
     });
   }
   return response.status(200).json({
@@ -79,8 +79,8 @@ async function DeleteBook(request:Request,response:Response) {
   });
 }
 // DECLARE ENDPOINTS
-bookRoutes.get("/search",ReadMiddleware, getBooks);
-bookRoutes.get("/:book_id",ReadMiddleware, getOneBook);
+bookRoutes.get("/search", getBooks);
+bookRoutes.get("/:book_id",getOneBook);
 bookRoutes.post("/create", AuthMiddleware, createBookMiddleware, CreateBook);
 bookRoutes.patch("/update/:book_id",AuthMiddleware,updateBookMiddleware,UpdateBook);
 bookRoutes.delete("/delete/:book_id",AuthMiddleware,deleteBookMiddleware,DeleteBook)
