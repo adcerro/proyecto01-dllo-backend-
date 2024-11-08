@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { createUser, readUsers,readUser,updateUser,deleteUser } from "./user.controller";
+import { createUser,readUser,updateUser,deleteUser } from "./user.controller";
 import { hashMiddleware } from "../../middleware/hasher";
 import { env } from "process";
 import { AuthMiddleware } from "../../middleware/auth";
@@ -45,7 +45,7 @@ async function logUser(request: Request, response: Response) {
   }
 
   try {
-    const user = await readUser(request.body.email);
+    const user = await readUser(request.body.email,request.body.active??true);
     if (user === null) {
       return response.status(400).json({ message: "Not a registered user" });
     }

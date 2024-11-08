@@ -1,17 +1,13 @@
 import { UserModel, UserType } from "./user.model";
 
 // DECLARE ACTION FUNCTION
-async function readUsersAction(filter:{}={}): Promise<UserType[]> {
-  const results = await UserModel.find(filter);
 
-  return results;
-}
+async function readUserAction(email:string,active:boolean=true): Promise<UserType|null> {
 
-async function readUserAction(email:string): Promise<UserType|null> {
-  const result = await UserModel.findOne({email:email});
-
+  const result = await UserModel.findOne({email:email,active:active});
+  
   return result;
 }
 
 // EXPORT ACTION FUNCTION
-export {readUsersAction, readUserAction};
+export {readUserAction};

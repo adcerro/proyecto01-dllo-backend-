@@ -1,18 +1,14 @@
 import createUserAction from "./create.user.action";
-import {readUsersAction,readUserAction} from "./read.user.action";
+import {readUserAction} from "./read.user.action";
 import { UserType } from "./user.model";
 import { CreateUserType , UpdateUserType} from "./user.types";
 import updateUserAction from "./update.user.action";
 import deleteUserAction from "./delete.user.action";
 
 // DECLARE CONTROLLER FUNCTIONS
-async function readUsers(filter:{}={}): Promise<UserType[]> {
-  const users = await readUsersAction(filter);
 
-  return users;
-}
-async function readUser(email:string): Promise<UserType|null> {
-  const user = await readUserAction(email);
+async function readUser(email:string, active:boolean=true): Promise<UserType|null> {
+  const user = await readUserAction(email,active);
 
   return user;
 }
@@ -32,4 +28,4 @@ async function updateUser(email:string,userData:UpdateUserType): Promise<UserTyp
   return updatedUser;
 }
 // EXPORT CONTROLLER FUNCTIONS
-export { readUsers,readUser, createUser,updateUser, deleteUser};
+export {readUser, createUser,updateUser, deleteUser};
