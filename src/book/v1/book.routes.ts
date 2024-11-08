@@ -26,8 +26,7 @@ async function getOneBook(request: Request, response: Response) {
 async function getBooks(request: Request, response: Response) {
   let books = await readBooks(request.query);
   return response.status(200).json({
-    message: "results",
-    books: books
+    books
   });
 }
 

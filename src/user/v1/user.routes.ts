@@ -1,7 +1,9 @@
 import { Router, Request, Response } from "express";
-import { createUser, readUsers,readUser } from "./user.controller";
+import { createUser, readUsers,readUser,updateUser } from "./user.controller";
 import { hashMiddleware } from "../../middleware/hasher";
 import { env } from "process";
+import { AuthMiddleware } from "../../middleware/auth";
+import { updateUserMiddleware } from "../../middleware/update_user_permision";
 
 // INIT ROUTES
 const userRoutes = Router();
@@ -66,10 +68,25 @@ async function logUser(request: Request, response: Response) {
     })
   }
 }
+async function UpdateUser(request: Request, response: Response){
+  let updatedUser = await updateUser(request.params.user_id,request.body);
+  console.log(request.body);
+  
+  if(updatedUser===null){
+    return response.status(401).json({
+      message: "something went worng"
+    });
+  }
+  return response.status(200).json({
+    message: "Updated",
+    user: updatedUser
+  });
+}
 
 // DECLARE ENDPOINTS
 userRoutes.post("/register", hashMiddleware, CreateUser);
 userRoutes.post("/login", logUser)
+userRoutes.patch("/update/:user_id",AuthMiddleware,updateUserMiddleware,hashMiddleware,UpdateUser)
 
 // EXPORT ROUTES
 export default userRoutes;
