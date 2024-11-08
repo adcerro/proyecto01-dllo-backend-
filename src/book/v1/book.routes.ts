@@ -1,8 +1,9 @@
 import { Router, Request, Response } from "express";
 import { AuthMiddleware } from "../../middleware/auth";
-import { createBookMiddleware } from "../../middleware/create_permision";
-import { createBook, readBook, readBooks , updateBook} from "./book.controller";
+import { createBookMiddleware } from "../../middleware/create_book_permision";
+import { createBook, deleteBook, readBook, readBooks , updateBook} from "./book.controller";
 import { updateBookMiddleware } from "../../middleware/update_book_permision";
+import { deleteBookMiddleware } from "../../middleware/delete_book_permision";
 
 // INIT ROUTES
 const bookRoutes = Router();
@@ -64,12 +65,24 @@ async function UpdateBook(request:Request,response:Response) {
     book: updatedBook
   });
 }
-
+async function DeleteBook(request:Request,response:Response) {
+  let deletedBook = await deleteBook(request.params.book_id);
+  if(deletedBook===null){
+    return response.status(401).json({
+      message: "something went worng"
+    });
+  }
+  return response.status(200).json({
+    message: "Deleted",
+    book: deletedBook
+  });
+}
 // DECLARE ENDPOINTS
 bookRoutes.get("/search", getBooks);
 bookRoutes.get("/:book_id", getOneBook);
 bookRoutes.post("/create", AuthMiddleware, createBookMiddleware, CreateBook);
 bookRoutes.patch("/update/:book_id",AuthMiddleware,updateBookMiddleware,UpdateBook);
+bookRoutes.delete("/delete/:book_id",AuthMiddleware,deleteBookMiddleware,DeleteBook)
 
 // EXPORT ROUTES
 export default bookRoutes;
