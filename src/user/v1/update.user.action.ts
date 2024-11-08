@@ -4,8 +4,8 @@ import { UpdateUserType } from "./user.types";
 // DECLARE ACTION FUNCTION
 async function updateUserAction(id: string, userData: UpdateUserType): Promise<UserType | null> {
 
-    const result = await UserModel.findByIdAndUpdate(id, userData, { returnDocument: 'after', new: true });
-    return result;
+    const updatedUser = await UserModel.findByIdAndUpdate(id, userData, { returnDocument: 'after', new: true });
+    return updatedUser;
 
 }
 

@@ -1,7 +1,8 @@
-import { CreateBookType } from "./book.types"
+import { CreateBookType, UpdateBookType } from "./book.types"
 import { BookType } from "./book.model";
 import {createBookAction} from "./create.book.action";
 import { readBookAction, readBooksAction } from "./read.book.action";
+import updateBookAction from "./update.book.action";
 
 async function createBook(userData: CreateBookType): Promise<BookType> {
     const createdUser = await createBookAction(userData);
@@ -17,6 +18,9 @@ async function createBook(userData: CreateBookType): Promise<BookType> {
   
     return book;
   }
-  
+  async function updateBook(id:string, bookData:UpdateBookType):Promise<BookType|null>{
+    const updatedBook = await updateBookAction(id,bookData);
+    return updatedBook;
+  }
   // EXPORT CONTROLLER FUNCTIONS
-  export {  createBook ,readBook,readBooks};
+  export {  createBook ,readBook,readBooks, updateBook};

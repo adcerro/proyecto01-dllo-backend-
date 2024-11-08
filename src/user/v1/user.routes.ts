@@ -70,7 +70,6 @@ async function logUser(request: Request, response: Response) {
 }
 async function UpdateUser(request: Request, response: Response){
   let updatedUser = await updateUser(request.params.user_id,request.body);
-  console.log(request.body);
   
   if(updatedUser===null){
     return response.status(401).json({

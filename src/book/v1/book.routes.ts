@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
-import { createBook } from "./book.controller";
 import { AuthMiddleware } from "../../middleware/auth";
 import { createBookMiddleware } from "../../middleware/create_permision";
-import { readBook, readBooks } from "./book.controller";
+import { createBook, readBook, readBooks , updateBook} from "./book.controller";
+import { updateBookMiddleware } from "../../middleware/update_book_permision";
 
 // INIT ROUTES
 const bookRoutes = Router();
@@ -52,11 +52,24 @@ async function CreateBook(request: Request, response: Response) {
     })
   }
 }
+async function UpdateBook(request:Request,response:Response) {
+  let updatedBook = await updateBook(request.params.book_id,request.body);
+  if(updatedBook===null){
+    return response.status(401).json({
+      message: "something went worng"
+    });
+  }
+  return response.status(200).json({
+    message: "Updated",
+    book: updatedBook
+  });
+}
 
 // DECLARE ENDPOINTS
 bookRoutes.get("/search", getBooks);
 bookRoutes.get("/:book_id", getOneBook);
 bookRoutes.post("/create", AuthMiddleware, createBookMiddleware, CreateBook);
+bookRoutes.patch("/update/:book_id",AuthMiddleware,updateBookMiddleware,UpdateBook);
 
 // EXPORT ROUTES
 export default bookRoutes;
