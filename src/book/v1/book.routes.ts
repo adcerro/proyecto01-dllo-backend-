@@ -25,6 +25,13 @@ async function getOneBook(request: Request, response: Response) {
 }
 
 async function getBooks(request: Request, response: Response) {
+  if(request.query.include_unactive===undefined){
+    request.query.active = "true";
+  }else{
+    request.query.include_unactive=undefined;
+  }
+  console.log(request.query);
+  
   let books = await readBooks(request.query);
   return response.status(200).json({
     books
@@ -69,7 +76,7 @@ async function DeleteBook(request:Request,response:Response) {
   let deletedBook = await deleteBook(request.params.book_id);
   if(deletedBook===null){
     return response.status(401).json({
-      message: "something went worng"
+      message: "something went wrong"
     });
   }
   return response.status(200).json({
