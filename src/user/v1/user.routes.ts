@@ -1,9 +1,10 @@
 import { Router, Request, Response } from "express";
-import { createUser, readUsers,readUser,updateUser } from "./user.controller";
+import { createUser, readUsers,readUser,updateUser,deleteUser } from "./user.controller";
 import { hashMiddleware } from "../../middleware/hasher";
 import { env } from "process";
 import { AuthMiddleware } from "../../middleware/auth";
 import { updateUserMiddleware } from "../../middleware/update_user_permision";
+import { deleteUserMiddleware } from "../../middleware/delete_user_permision";
 
 // INIT ROUTES
 const userRoutes = Router();
@@ -81,11 +82,25 @@ async function UpdateUser(request: Request, response: Response){
     user: updatedUser
   });
 }
+async function DeleteUser(request:Request, response:Response){
+  let deletedUser = await deleteUser(request.body.email);
+  
+  if(deletedUser===null){
+    return response.status(401).json({
+      message: "something went worng"
+    });
+  }
+  return response.status(200).json({
+    message: "Deleted",
+    user: deletedUser
+  });
+}
 
 // DECLARE ENDPOINTS
 userRoutes.post("/register", hashMiddleware, CreateUser);
-userRoutes.post("/login", logUser)
-userRoutes.patch("/update",AuthMiddleware,updateUserMiddleware,hashMiddleware,UpdateUser)
+userRoutes.post("/login", logUser);
+userRoutes.patch("/update",AuthMiddleware,updateUserMiddleware,hashMiddleware,UpdateUser);
+userRoutes.delete("/delete",AuthMiddleware,deleteUserMiddleware,DeleteUser);
 
 // EXPORT ROUTES
 export default userRoutes;
