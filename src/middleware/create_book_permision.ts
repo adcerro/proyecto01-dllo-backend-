@@ -4,7 +4,6 @@ import { readUser } from "../user/v1/user.controller";
 export async function createBookMiddleware(request: Request, response: Response, next: NextFunction) {
     // verifico permiso de crear
     let user = await readUser(request.body.user);
-    console.log(user);
     
     if(user?.book_creator !== true){
         return response.status(401).json({

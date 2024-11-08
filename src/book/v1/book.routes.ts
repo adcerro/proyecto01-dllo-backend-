@@ -11,7 +11,6 @@ const bookRoutes = Router();
 // DECLARE ENDPOINT FUNCTIONS
 async function getOneBook(request: Request, response: Response) {
   let book = await readBook(request.params.book_id,request.query.active===undefined?true:false);
-  console.log(request.query.active===undefined?true:false);
   
   if (book === null) {
     return response.status(401).json({
