@@ -20,8 +20,8 @@ async function createUser(userData: CreateUserType): Promise<UserType> {
 
   return createdUser;
 }
-async function updateUser(id:string,userData:UpdateUserType): Promise<UserType|null> {
-  const updatedUser = await updateUserAction(id,userData);
+async function updateUser(email:string,userData:UpdateUserType): Promise<UserType|null> {
+  const updatedUser = await updateUserAction(email,userData);
 
   return updatedUser;
 }

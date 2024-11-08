@@ -69,7 +69,7 @@ async function logUser(request: Request, response: Response) {
   }
 }
 async function UpdateUser(request: Request, response: Response){
-  let updatedUser = await updateUser(request.params.user_id,request.body);
+  let updatedUser = await updateUser(request.body.email,request.body);
   
   if(updatedUser===null){
     return response.status(401).json({
@@ -85,7 +85,7 @@ async function UpdateUser(request: Request, response: Response){
 // DECLARE ENDPOINTS
 userRoutes.post("/register", hashMiddleware, CreateUser);
 userRoutes.post("/login", logUser)
-userRoutes.patch("/update/:user_id",AuthMiddleware,updateUserMiddleware,hashMiddleware,UpdateUser)
+userRoutes.patch("/update",AuthMiddleware,updateUserMiddleware,hashMiddleware,UpdateUser)
 
 // EXPORT ROUTES
 export default userRoutes;
