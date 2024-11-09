@@ -30,7 +30,6 @@ async function getBooks(request: Request, response: Response) {
   }else{
     request.query.include_unactive=undefined;
   }
-  console.log(request.query);
   
   let books = await readBooks(request.query);
   return response.status(200).json({
