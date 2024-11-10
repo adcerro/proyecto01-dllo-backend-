@@ -21,7 +21,6 @@ const ReserveSchema = new Schema<ReserveType>({
     email: {
         type: String,
         required: true,
-        unique: true
     },
     title:{
         type: String,
